@@ -161,6 +161,14 @@ const places = [
     accuracy: "Approximate road placement"
   },
   {
+    name: "Half Acre Hobbies",
+    category: "Sourdough, baked goods, eggs, honey, jams, and more",
+    address: "16536 Missionary Ridge, Baton Rouge, LA 70817",
+    lat: 30.404811904767,
+    lng: -91.002988670564,
+    accuracy: "Exact address"
+  },
+  {
     name: "Loads of Love",
     category: "Sourdough and sweet treats",
     address: "410 Centerville St. NE, Denham Springs, LA",
@@ -177,12 +185,6 @@ const places = [
     accuracy: "Approximate street placement"
   }
 ];
-
-const unlisted = {
-  name: "Half Acre Hobbies",
-  category: "Sourdough, baked goods, eggs, honey, jams, and more",
-  address: "Address not listed; follow Facebook for schedule"
-};
 
 function mapsUrl(address) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
@@ -227,11 +229,6 @@ places.forEach((place, index) => {
   card.addEventListener("mouseenter", () => marker.openPopup());
   list.appendChild(card);
 });
-
-const halfCard = document.createElement("div");
-halfCard.className = "place";
-halfCard.innerHTML = `<strong>${places.length + 1}. ${unlisted.name}</strong><span>${unlisted.category}<br>${unlisted.address}</span><small>Not pinned</small>`;
-list.appendChild(halfCard);
 
 map.fitBounds(bounds, { padding: [42, 42] });
 </script>
