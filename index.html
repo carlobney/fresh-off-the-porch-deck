@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fresh Off the Porch - Slide Shot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+  body {
+    font-family: "Figtree", -apple-system, BlinkMacSystemFont, sans-serif;
+    display: grid;
+    place-items: center;
+  }
+  #stage {
+    width: min(100vw, calc(100vh * 16 / 9));
+    height: min(100vh, calc(100vw * 9 / 16));
+    position: relative;
+    overflow: hidden;
+    background: #000;
+  }
+  .slide {
+    display: none;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    padding: 7.4% 8%;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .slide.active { display: flex; }
+  .dark { background: #142C37; color: #EAF6F7; }
+  .deeper { background: #0C1B22; color: #EAF6F7; }
+  .light { background: #F5F1EA; color: #142C37; }
+  .ice { background: #E8F5F6; color: #142C37; }
+  .circuit { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.28; pointer-events: none; }
+  .light .circuit, .ice .circuit { opacity: 0.16; }
+  .kicker {
+    position: relative;
+    z-index: 1;
+    margin: 0 0 1.8%;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: clamp(13px, 1.62vw, 31px);
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: #68E4E9;
+  }
+  .light .kicker, .ice .kicker { color: #1D9CA1; }
+  h1, h2 {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    font-weight: 900;
+    letter-spacing: 0;
+    line-height: 0.94;
+    max-width: 11.5ch;
+  }
+  h1 { font-size: clamp(44px, 8vw, 154px); }
+  h2 { font-size: clamp(36px, 6.5vw, 125px); }
+  p {
+    position: relative;
+    z-index: 1;
+    margin: 2.4% 0 0;
+    max-width: 86%;
+    font-size: clamp(17px, 2.14vw, 41px);
+    line-height: 1.35;
+    color: #9FBDC6;
+  }
+  .light p, .ice p { color: #3D6979; }
+  .byline {
+    position: absolute;
+    left: 8%;
+    bottom: 8.2%;
+    z-index: 1;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: clamp(12px, 1.35vw, 26px);
+    color: #547E8D;
+  }
+  .pill-row { position: relative; z-index: 1; display: flex; align-items: center; gap: 1.15vw; margin-bottom: 2.24vw; }
+  .pill {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: clamp(12px, 1.35vw, 26px);
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #0C1B22;
+    background: #68E4E9;
+    border-radius: 999px;
+    padding: 0.62vw 1.25vw;
+  }
+  .muted-pill { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: clamp(12px, 1.35vw, 26px); color: #7A9CA8; }
+  .two-col { display: grid; grid-template-columns: 0.92fr 1.05fr; gap: 3.44vw; align-items: center; }
+  .vendor h2 { max-width: 8.8ch; }
+  .cards { position: relative; z-index: 1; display: grid; gap: 0.99vw; }
+  .card {
+    background: rgba(255,255,255,0.94);
+    border: 2px solid #DDE9EA;
+    border-radius: 8px;
+    padding: 1.35vw 1.77vw;
+    box-shadow: 0 24px 54px rgba(8, 23, 29, 0.18);
+  }
+  .dark .card, .deeper .card { background: rgba(234, 246, 247, 0.98); }
+  .label {
+    margin-bottom: 0.52vw;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: clamp(10px, 0.99vw, 19px);
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #1D9CA1;
+  }
+  .value { font-size: clamp(14px, 1.62vw, 31px); line-height: 1.22; font-weight: 700; color: #142C37; }
+  .summary { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25vw; margin-top: 2.6vw; }
+  .summary .card { min-height: 6.56vw; }
+  .note-box {
+    position: relative;
+    z-index: 1;
+    max-width: 78%;
+    margin-top: 3.02vw;
+    border-left: 5px solid #68E4E9;
+    padding-left: 2.24vw;
+    font-size: clamp(26px, 3.23vw, 62px);
+    line-height: 1.18;
+    color: #EAF6F7;
+    font-weight: 800;
+  }
+  #progress {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 4px;
+    width: 100%;
+    background: rgba(255,255,255,0.12);
+    z-index: 20;
+  }
+  #progress > div {
+    height: 100%;
+    width: 12.5%;
+    background: #68E4E9;
+    transition: width 180ms ease;
+  }
+  #nav {
+    position: fixed;
+    left: 50%;
+    bottom: 16px;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 20;
+    padding: 8px 10px;
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 999px;
+    background: rgba(12, 27, 34, 0.72);
+    backdrop-filter: blur(12px);
+  }
+  button {
+    width: 42px;
+    height: 42px;
+    border: 1px solid rgba(104,228,233,0.5);
+    border-radius: 999px;
+    background: rgba(104,228,233,0.12);
+    color: #EAF6F7;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  button:disabled { opacity: 0.35; cursor: default; }
+  #count {
+    width: 56px;
+    text-align: center;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    color: #9FBDC6;
+  }
+  @media (max-width: 720px) {
+    .slide { padding: 9% 8%; }
+    .two-col { grid-template-columns: 1fr; gap: 4vw; }
+    .vendor h2 { max-width: 11ch; }
+    .summary { grid-template-columns: 1fr; }
+    .byline { display: none; }
+    p, .note-box { max-width: 92%; }
+  }
+</style>
+</head>
+<body>
+<div id="progress"><div></div></div>
+<main id="stage">
+  <section class="slide dark">
+    <svg class="circuit" viewBox="0 0 1920 1080"><g stroke="#68E4E9" stroke-width="2.5" fill="none" stroke-linecap="round"><path d="M1080 150 H1420 L1540 270 H1920"></path><path d="M1240 270 V520 L1360 640 H1780"></path><path d="M1320 760 H1600 L1710 870 H1920"></path></g><g fill="#68E4E9"><circle cx="1420" cy="150" r="8"></circle><circle cx="1360" cy="640" r="8"></circle></g></svg>
+    <div class="kicker">Local Vendor Guide</div><h1>Fresh Off the Porch</h1><p>Chelsea's quick guide to porch pickups, cottage bakers, cold brew coffee, and local provisions.</p><div class="byline">Twin Magnolia Coffee Co. · Chelsea's deck</div>
+  </section>
+  <section class="slide light vendor">
+    <svg class="circuit" viewBox="0 0 1920 1080"><g stroke="#1D9CA1" stroke-width="2.5" fill="none" stroke-linecap="round"><path d="M0 220 H360 L480 340 H900"></path><path d="M260 340 V610 L390 740 H820"></path></g></svg>
+    <div class="two-col"><div><div class="pill-row"><span class="pill">Coffee</span><span class="muted-pill">Cold brew</span></div><h2>Twin Magnolia Coffee Co.</h2></div><div class="cards"><div class="card"><div class="label">Offering</div><div class="value">Cold brew coffee</div></div><div class="card"><div class="label">Prairieville</div><div class="value">38171 Sweetbriar Dr., Prairieville, LA 70769</div></div><div class="card"><div class="label">Laplace</div><div class="value">101 Jennifer Ln., Laplace, LA</div></div><div class="card"><div class="label">Schedule</div><div class="value">Follow Facebook for schedule</div></div></div></div>
+  </section>
+  <section class="slide dark vendor">
+    <svg class="circuit" viewBox="0 0 1920 1080"><g stroke="#68E4E9" stroke-width="2.5" fill="none" stroke-linecap="round"><path d="M1020 250 H1420 L1540 370 H1920"></path><path d="M1220 370 V670 L1380 820 H1840"></path></g></svg>
+    <div class="two-col"><div><div class="pill-row"><span class="pill">Bakery</span><span class="muted-pill">Gluten-free</span></div><h2>Wild Child Baking</h2></div><div class="cards"><div class="card"><div class="label">Offering</div><div class="value">Gluten-free, dye-free bakery</div></div><div class="card"><div class="label">Orders</div><div class="value">Custom orders available</div></div><div class="card"><div class="label">Location</div><div class="value">5836 Vicksburg Dr., Baton Rouge, LA</div></div><div class="card"><div class="label">Schedule</div><div class="value">Follow Facebook for schedule</div></div></div></div>
+  </section>
+  <section class="slide ice vendor">
+    <div class="two-col"><div><div class="pill-row"><span class="pill">Sourdough</span><span class="muted-pill">Homecrafted</span></div><h2>Thui's Homecrafted Goods</h2></div><div class="cards"><div class="card"><div class="label">Offering</div><div class="value">Sourdough and other handcrafted goods</div></div><div class="card"><div class="label">Location</div><div class="value">17496 Rosemont Dr., Prairieville, LA</div></div></div></div>
+  </section>
+  <section class="slide dark vendor">
+    <svg class="circuit" viewBox="0 0 1920 1080"><g stroke="#68E4E9" stroke-width="2.5" fill="none" stroke-linecap="round"><path d="M0 700 H420 L540 820 H1120"></path><path d="M880 180 H1260 L1380 300 H1920"></path></g></svg>
+    <div class="two-col"><div><div class="pill-row"><span class="pill">Farmstand</span><span class="muted-pill">Sweets</span></div><h2>Hailee Farmstand</h2></div><div class="cards"><div class="card"><div class="label">Offerings</div><div class="value">Cookies, cinnamon rolls, and holiday specials</div></div><div class="card"><div class="label">Location</div><div class="value">13249 David Lee Dr., Walker, LA</div></div><div class="card"><div class="label">Schedule</div><div class="value">Follow Facebook for schedule</div></div></div></div>
+  </section>
+  <section class="slide light vendor">
+    <svg class="circuit" viewBox="0 0 1920 1080"><g stroke="#1D9CA1" stroke-width="2.5" fill="none" stroke-linecap="round"><path d="M1120 170 H1420 L1540 290 H1920"></path><path d="M1280 290 V620 L1420 760 H1860"></path></g></svg>
+    <div class="two-col"><div><div class="pill-row"><span class="pill">Provisions</span><span class="muted-pill">Local goods</span></div><h2>Pine Street Provisions</h2></div><div class="cards"><div class="card"><div class="label">Offerings</div><div class="value">Baked goods, local honey, and homemade preserves</div></div><div class="card"><div class="label">Coming Soon</div><div class="value">Eggs and produce</div></div><div class="card"><div class="label">Location</div><div class="value">223 Pine St., Denham Springs, LA</div></div></div></div>
+  </section>
+  <section class="slide ice">
+    <div class="kicker">At a Glance</div><h2>Where to start</h2><div class="summary"><div class="card"><div class="label">Coffee</div><div class="value">Twin Magnolia Coffee Co.</div></div><div class="card"><div class="label">Bakery</div><div class="value">Wild Child Baking</div></div><div class="card"><div class="label">Sourdough</div><div class="value">Thui's Homecrafted Goods</div></div><div class="card"><div class="label">Farmstand</div><div class="value">Hailee Farmstand</div></div><div class="card"><div class="label">Provisions</div><div class="value">Pine Street Provisions</div></div></div>
+  </section>
+  <section class="slide deeper">
+    <svg class="circuit" viewBox="0 0 1920 1080"><g stroke="#68E4E9" stroke-width="2.5" fill="none" stroke-linecap="round"><path d="M0 320 H520 L640 440 H1260 L1380 320 H1920"></path><path d="M420 440 V740 L560 880 H1140"></path></g><g fill="#68E4E9"><circle cx="520" cy="320" r="8"></circle><circle cx="1140" cy="880" r="8"></circle></g></svg>
+    <div class="kicker">Before You Go</div><h2>Check the schedule.</h2><div class="note-box">Several vendors listed “Follow Facebook for schedule.” Check each vendor's page before making a pickup trip.</div>
+  </section>
+</main>
+<nav id="nav" aria-label="Deck controls">
+  <button id="prev" aria-label="Previous slide">←</button>
+  <span id="count">1/8</span>
+  <button id="next" aria-label="Next slide">→</button>
+</nav>
+<script>
+  const slides = [...document.querySelectorAll(".slide")];
+  const fill = document.querySelector("#progress > div");
+  const count = document.querySelector("#count");
+  const prev = document.querySelector("#prev");
+  const next = document.querySelector("#next");
+  let cur = 0;
+  let startX = 0;
+
+  function render() {
+    slides.forEach((slide, i) => slide.classList.toggle("active", i === cur));
+    fill.style.width = `${((cur + 1) / slides.length) * 100}%`;
+    count.textContent = `${cur + 1}/${slides.length}`;
+    prev.disabled = cur === 0;
+    next.disabled = cur === slides.length - 1;
+  }
+
+  function go(delta) {
+    cur = Math.max(0, Math.min(slides.length - 1, cur + delta));
+    render();
+  }
+
+  prev.addEventListener("click", () => go(-1));
+  next.addEventListener("click", () => go(1));
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowRight" || event.key === "ArrowDown" || event.key === " ") go(1);
+    if (event.key === "ArrowLeft" || event.key === "ArrowUp") go(-1);
+  });
+  document.addEventListener("touchstart", (event) => { startX = event.touches[0].clientX; }, { passive: true });
+  document.addEventListener("touchend", (event) => {
+    const dx = event.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
+  });
+  render();
+</script>
+</body>
+</html>
