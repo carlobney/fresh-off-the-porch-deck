@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fresh Off the Porch Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; background: #0C1B22; color: #EAF6F7; }
+  body { font-family: "Figtree", -apple-system, BlinkMacSystemFont, sans-serif; }
+  .shell { min-height: 100vh; display: grid; grid-template-columns: minmax(340px, 0.42fr) minmax(0, 1fr); }
+  aside {
+    position: relative;
+    z-index: 2;
+    padding: 32px;
+    background: #142C37;
+    border-right: 1px solid rgba(104, 228, 233, 0.18);
+    overflow: auto;
+  }
+  .kicker {
+    margin: 0 0 12px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: #68E4E9;
+  }
+  h1 { margin: 0; font-size: clamp(40px, 5vw, 78px); line-height: 0.94; letter-spacing: 0; }
+  .intro { margin: 18px 0 24px; color: #9FBDC6; font-size: 17px; line-height: 1.45; }
+  .actions { display: grid; gap: 10px; margin-bottom: 24px; }
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(104, 228, 233, 0.46);
+    background: #68E4E9;
+    color: #0C1B22;
+    font-weight: 800;
+    text-decoration: none;
+  }
+  .button.secondary { background: transparent; color: #EAF6F7; }
+  .list { display: grid; gap: 12px; }
+  .place {
+    display: block;
+    border: 1px solid rgba(234, 246, 247, 0.13);
+    border-radius: 8px;
+    padding: 14px;
+    background: rgba(234, 246, 247, 0.06);
+    color: inherit;
+    text-decoration: none;
+  }
+  .place strong { display: block; font-size: 17px; line-height: 1.2; }
+  .place span { display: block; margin-top: 6px; color: #9FBDC6; font-size: 14px; line-height: 1.35; }
+  .place small {
+    display: inline-flex;
+    margin-top: 9px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    color: #68E4E9;
+    text-transform: uppercase;
+    font-size: 11px;
+  }
+  #map { min-height: 100vh; width: 100%; background: #E8F5F6; }
+  .leaflet-popup-content-wrapper { border-radius: 8px; }
+  .popup h2 { margin: 0 0 6px; color: #142C37; font-size: 19px; line-height: 1.1; }
+  .popup p { margin: 0 0 10px; color: #3D6979; line-height: 1.3; }
+  .popup a { color: #0B6D73; font-weight: 800; text-decoration: none; }
+  @media (max-width: 820px) {
+    .shell { grid-template-columns: 1fr; }
+    aside { padding: 22px; max-height: none; border-right: 0; }
+    #map { min-height: 64vh; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside>
+    <p class="kicker">Fresh Off the Porch</p>
+    <h1>Vendor Map</h1>
+    <p class="intro">Tap a card or marker to open the exact address in Google Maps. Pins marked approximate are placed by street or area when the exact house number was not available in open map data.</p>
+    <div class="actions">
+      <a class="button" id="routeLink" href="#">Open Full Route</a>
+      <a class="button secondary" href="index.html">Back to Deck</a>
+    </div>
+    <div class="list" id="placeList"></div>
+  </aside>
+  <div id="map" aria-label="Fresh Off the Porch vendor map"></div>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const places = [
+  {
+    name: "Twin Magnolia Coffee Co. - Prairieville",
+    category: "Cold brew coffee",
+    address: "38171 Sweetbriar Dr., Prairieville, LA 70769",
+    lat: 30.3248994,
+    lng: -90.9666422,
+    accuracy: "Approximate street placement"
+  },
+  {
+    name: "Twin Magnolia Coffee Co. - Laplace",
+    category: "Cold brew coffee",
+    address: "101 Jennifer Ln., Laplace, LA",
+    lat: 30.073684,
+    lng: -90.4661886,
+    accuracy: "Exact address"
+  },
+  {
+    name: "Wild Child Baking",
+    category: "Gluten-free, dye-free bakery",
+    address: "5836 Vicksburg Dr., Baton Rouge, LA",
+    lat: 30.3995304,
+    lng: -91.01191,
+    accuracy: "Exact address"
+  },
+  {
+    name: "Thius Homecrafted Goods",
+    category: "Sourdough and handcrafted goods",
+    address: "17496 Rosemont Dr., Prairieville, LA",
+    lat: 30.327662,
+    lng: -90.913713,
+    accuracy: "Exact address"
+  },
+  {
+    name: "Hailee Farmstand",
+    category: "Cookies, cinnamon rolls, holiday specials",
+    address: "13249 David Lee Dr., Walker, LA",
+    lat: 30.522592600759,
+    lng: -90.86847717974,
+    accuracy: "Exact address"
+  },
+  {
+    name: "Pine Street Provisions",
+    category: "Baked goods, honey, preserves",
+    address: "223 Pine St., Denham Springs, LA",
+    lat: 30.4912671,
+    lng: -90.9539785,
+    accuracy: "Exact address"
+  },
+  {
+    name: "The Bread Box",
+    category: "Bread",
+    address: "12691 Hwy 67, Clinton, LA 70722",
+    lat: 30.893808725997,
+    lng: -91.002909313114,
+    accuracy: "Exact address"
+  },
+  {
+    name: "Living Acres Southern Farm",
+    category: "Coming soon",
+    address: "31765 Greenwell Springs Road, Greenwell Springs, LA 70739",
+    lat: 30.5813978,
+    lng: -90.9948635,
+    accuracy: "Approximate road placement"
+  },
+  {
+    name: "Loads of Love",
+    category: "Sourdough and sweet treats",
+    address: "410 Centerville St. NE, Denham Springs, LA",
+    lat: 30.4870845,
+    lng: -90.9508012,
+    accuracy: "Exact address"
+  },
+  {
+    name: "The Masters Morsels",
+    category: "Breads, granola, candies, quick breads, bagels, scones",
+    address: "10165 Lake Park Avenue, Gonzales, LA 70737",
+    lat: 30.2162161,
+    lng: -90.8806925,
+    accuracy: "Approximate street placement"
+  }
+];
+
+const unlisted = {
+  name: "Half Acre Hobbies",
+  category: "Sourdough, baked goods, eggs, honey, jams, and more",
+  address: "Address not listed; follow Facebook for schedule"
+};
+
+function mapsUrl(address) {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+}
+
+const routeAddresses = places.map((place) => place.address);
+const routeUrl = new URL("https://www.google.com/maps/dir/");
+routeUrl.searchParams.set("api", "1");
+routeUrl.searchParams.set("destination", routeAddresses[routeAddresses.length - 1]);
+routeUrl.searchParams.set("waypoints", routeAddresses.slice(0, -1).join("|"));
+document.querySelector("#routeLink").href = routeUrl.toString();
+
+const map = L.map("map", { scrollWheelZoom: false }).setView([30.47, -90.93], 9);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  maxZoom: 19,
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+const exactColor = "#142C37";
+const approximateColor = "#1D9CA1";
+const bounds = [];
+const list = document.querySelector("#placeList");
+
+places.forEach((place, index) => {
+  const isApproximate = place.accuracy.toLowerCase().includes("approximate");
+  const marker = L.circleMarker([place.lat, place.lng], {
+    radius: 10,
+    color: "#EAF6F7",
+    weight: 3,
+    fillColor: isApproximate ? approximateColor : exactColor,
+    fillOpacity: 1
+  }).addTo(map);
+  marker.bindPopup(`<div class="popup"><h2>${place.name}</h2><p>${place.category}<br>${place.address}<br>${place.accuracy}</p><a href="${mapsUrl(place.address)}" target="_blank" rel="noopener">Open in Google Maps</a></div>`);
+  bounds.push([place.lat, place.lng]);
+
+  const card = document.createElement("a");
+  card.className = "place";
+  card.href = mapsUrl(place.address);
+  card.target = "_blank";
+  card.rel = "noopener";
+  card.innerHTML = `<strong>${index + 1}. ${place.name}</strong><span>${place.category}<br>${place.address}</span><small>${place.accuracy}</small>`;
+  card.addEventListener("mouseenter", () => marker.openPopup());
+  list.appendChild(card);
+});
+
+const halfCard = document.createElement("div");
+halfCard.className = "place";
+halfCard.innerHTML = `<strong>${places.length + 1}. ${unlisted.name}</strong><span>${unlisted.category}<br>${unlisted.address}</span><small>Not pinned</small>`;
+list.appendChild(halfCard);
+
+map.fitBounds(bounds, { padding: [42, 42] });
+</script>
+</body>
+</html>

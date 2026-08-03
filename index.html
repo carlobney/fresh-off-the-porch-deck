@@ -183,6 +183,18 @@
     font-size: 12px;
     color: #9FBDC6;
   }
+  .map-link {
+    display: inline-grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border: 1px solid rgba(104,228,233,0.5);
+    border-radius: 999px;
+    background: rgba(104,228,233,0.12);
+    color: #EAF6F7;
+    text-decoration: none;
+    font-size: 19px;
+  }
   @media (max-width: 720px) {
     .slide { padding: 9% 8%; }
     .two-col { grid-template-columns: 1fr; gap: 4vw; }
@@ -250,6 +262,7 @@
   <button id="prev" aria-label="Previous slide">←</button>
   <span id="count">1/8</span>
   <button id="next" aria-label="Next slide">→</button>
+  <a class="map-link" href="map.html" aria-label="Open vendor map" title="Open vendor map">⌖</a>
 </nav>
 <script>
   const slides = [...document.querySelectorAll(".slide")];
