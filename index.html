@@ -115,6 +115,14 @@
   .value { font-size: clamp(14px, 1.62vw, 31px); line-height: 1.22; font-weight: 700; color: #142C37; }
   .summary { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25vw; margin-top: 2.6vw; }
   .summary .card { min-height: 6.56vw; }
+  .summary-slide { padding-top: 5%; padding-bottom: 10%; }
+  .summary-slide h2 { font-size: clamp(34px, 5.8vw, 112px); }
+  .summary-slide .summary { gap: 0.78vw; margin-top: 1.7vw; }
+  .summary-slide .card {
+    min-height: 5.2vw;
+    padding: 0.92vw 1.25vw;
+  }
+  .summary-slide .value { font-size: clamp(13px, 1.4vw, 27px); }
   .note-box {
     position: relative;
     z-index: 1;
@@ -211,8 +219,27 @@
     <svg class="circuit" viewBox="0 0 1920 1080"><g stroke="#1D9CA1" stroke-width="2.5" fill="none" stroke-linecap="round"><path d="M1120 170 H1420 L1540 290 H1920"></path><path d="M1280 290 V620 L1420 760 H1860"></path></g></svg>
     <div class="two-col"><div><div class="pill-row"><span class="pill">Provisions</span><span class="muted-pill">Local goods</span></div><h2>Pine Street Provisions</h2></div><div class="cards"><div class="card"><div class="label">Offerings</div><div class="value">Baked goods, local honey, and homemade preserves</div></div><div class="card"><div class="label">Coming Soon</div><div class="value">Eggs and produce</div></div><div class="card"><div class="label">Location</div><div class="value">223 Pine St., Denham Springs, LA</div></div></div></div>
   </section>
-  <section class="slide ice">
-    <div class="kicker">At a Glance</div><h2>Where to start</h2><div class="summary"><div class="card"><div class="label">Coffee</div><div class="value">Twin Magnolia Coffee Co.</div></div><div class="card"><div class="label">Bakery</div><div class="value">Wild Child Baking</div></div><div class="card"><div class="label">Sourdough</div><div class="value">Thius Homecrafted Goods</div></div><div class="card"><div class="label">Farmstand</div><div class="value">Hailee Farmstand</div></div><div class="card"><div class="label">Provisions</div><div class="value">Pine Street Provisions</div></div></div>
+  <section class="slide dark vendor">
+    <svg class="circuit" viewBox="0 0 1920 1080"><g stroke="#68E4E9" stroke-width="2.5" fill="none" stroke-linecap="round"><path d="M980 200 H1320 L1450 330 H1920"></path><path d="M1180 330 V650 L1320 790 H1820"></path></g></svg>
+    <div class="two-col"><div><div class="pill-row"><span class="pill">Bread</span><span class="muted-pill">Clinton</span></div><h2>The Bread Box</h2></div><div class="cards"><div class="card"><div class="label">Offering</div><div class="value">Bread</div></div><div class="card"><div class="label">Location</div><div class="value">12691 Hwy 67, Clinton, LA 70722</div></div><div class="card"><div class="label">Schedule</div><div class="value">Follow Facebook for schedule</div></div></div></div>
+  </section>
+  <section class="slide ice vendor">
+    <div class="two-col"><div><div class="pill-row"><span class="pill">Farm</span><span class="muted-pill">Coming soon</span></div><h2>Living Acres Southern Farm</h2></div><div class="cards"><div class="card"><div class="label">Status</div><div class="value">Coming soon</div></div><div class="card"><div class="label">Location</div><div class="value">31765 Greenwell Springs Road, Greenwell Springs, LA 70739</div></div><div class="card"><div class="label">Schedule</div><div class="value">Follow Facebook for schedule</div></div></div></div>
+  </section>
+  <section class="slide dark vendor">
+    <svg class="circuit" viewBox="0 0 1920 1080"><g stroke="#68E4E9" stroke-width="2.5" fill="none" stroke-linecap="round"><path d="M0 260 H440 L560 380 H980"></path><path d="M360 380 V700 L500 840 H1100"></path></g></svg>
+    <div class="two-col"><div><div class="pill-row"><span class="pill">Hobbies</span><span class="muted-pill">Baked goods</span></div><h2>Half Acre Hobbies</h2></div><div class="cards"><div class="card"><div class="label">Offerings</div><div class="value">Sourdough, baked goods, eggs, honey, jams, and more</div></div><div class="card"><div class="label">Schedule</div><div class="value">Follow Facebook for schedule</div></div></div></div>
+  </section>
+  <section class="slide light vendor">
+    <svg class="circuit" viewBox="0 0 1920 1080"><g stroke="#1D9CA1" stroke-width="2.5" fill="none" stroke-linecap="round"><path d="M1060 210 H1420 L1540 330 H1920"></path><path d="M1240 330 V650 L1400 810 H1860"></path></g></svg>
+    <div class="two-col"><div><div class="pill-row"><span class="pill">Treats</span><span class="muted-pill">Denham Springs</span></div><h2>Loads of Love</h2></div><div class="cards"><div class="card"><div class="label">Offerings</div><div class="value">Sourdough and sweet treats</div></div><div class="card"><div class="label">Location</div><div class="value">410 Centerville St. NE, Denham Springs, LA</div></div></div></div>
+  </section>
+  <section class="slide deeper vendor">
+    <svg class="circuit" viewBox="0 0 1920 1080"><g stroke="#68E4E9" stroke-width="2.5" fill="none" stroke-linecap="round"><path d="M0 700 H420 L540 820 H1120"></path><path d="M940 190 H1300 L1420 310 H1920"></path></g><g fill="#68E4E9"><circle cx="420" cy="700" r="8"></circle><circle cx="1300" cy="190" r="8"></circle></g></svg>
+    <div class="two-col"><div><div class="pill-row"><span class="pill">Bakery</span><span class="muted-pill">Gonzales</span></div><h2>The Masters Morsels</h2></div><div class="cards"><div class="card"><div class="label">Offerings</div><div class="value">Breads, granola, candies, quick breads, bagels, and scones</div></div><div class="card"><div class="label">Location</div><div class="value">10165 Lake Park Avenue, Gonzales, LA 70737</div></div></div></div>
+  </section>
+  <section class="slide ice summary-slide">
+    <div class="kicker">At a Glance</div><h2>Where to start</h2><div class="summary"><div class="card"><div class="label">Coffee</div><div class="value">Twin Magnolia Coffee Co.</div></div><div class="card"><div class="label">Bakery</div><div class="value">Wild Child Baking</div></div><div class="card"><div class="label">Sourdough</div><div class="value">Thius Homecrafted Goods</div></div><div class="card"><div class="label">Farmstand</div><div class="value">Hailee Farmstand</div></div><div class="card"><div class="label">Provisions</div><div class="value">Pine Street Provisions</div></div><div class="card"><div class="label">Bread</div><div class="value">The Bread Box</div></div><div class="card"><div class="label">Farm</div><div class="value">Living Acres Southern Farm</div></div><div class="card"><div class="label">Hobbies</div><div class="value">Half Acre Hobbies</div></div><div class="card"><div class="label">Treats</div><div class="value">Loads of Love</div></div><div class="card"><div class="label">Bakery</div><div class="value">The Masters Morsels</div></div></div>
   </section>
   <section class="slide deeper">
     <svg class="circuit" viewBox="0 0 1920 1080"><g stroke="#68E4E9" stroke-width="2.5" fill="none" stroke-linecap="round"><path d="M0 320 H520 L640 440 H1260 L1380 320 H1920"></path><path d="M420 440 V740 L560 880 H1140"></path></g><g fill="#68E4E9"><circle cx="520" cy="320" r="8"></circle><circle cx="1140" cy="880" r="8"></circle></g></svg>
@@ -230,7 +257,8 @@
   const count = document.querySelector("#count");
   const prev = document.querySelector("#prev");
   const next = document.querySelector("#next");
-  let cur = 0;
+  const initialSlide = Number(new URLSearchParams(location.search).get("slide") || "1");
+  let cur = Math.max(0, Math.min(slides.length - 1, initialSlide - 1));
   let startX = 0;
 
   function render() {
